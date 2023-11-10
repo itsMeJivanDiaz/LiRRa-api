@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require('body-parser');
 const { db } = require('./db');
-const { getUserTypeId } = require('./helper');
+const { getUserTypeId, cryptPassword } = require('./helper');
 const { v4: uuidv4 } = require('uuid');
 
 const PORT = 5454;
@@ -53,9 +53,11 @@ app.post('/sign-up', jsonParser, async (_req, res) => {
 
 		const user_type_id = getUserTypeId(user_type);
 
+		const password = await cryptPassword(user_password);
+
 		const query = {
 			text: "INSERT INTO lirra.user(user_id, first_name, middle_name, last_name, user_email, user_password, user_type_id) VALUES($1, $2, $3, $4, $5, $6, $7);",
-			values: [userId, first_name, middle_name, last_name, user_email, user_password, user_type_id]
+			values: [userId, first_name, middle_name, last_name, user_email, password, user_type_id]
 		};
 
 		await client.query(query);

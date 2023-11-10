@@ -1,3 +1,5 @@
+const bcrypt = require('bcrypt');
+
 const getUserTypeId = (userType) => {
 	var user_type_id;
 	if (userType === "librarian") {
@@ -12,6 +14,12 @@ const getUserTypeId = (userType) => {
 	return user_type_id;
 }
 
+const cryptPassword = async (password) => {
+	const hash = await bcrypt.hash(password, 10);
+	return hash;
+};
+
 module.exports = { 
-	getUserTypeId
+	getUserTypeId,
+	cryptPassword
 };
