@@ -191,6 +191,12 @@ app.get('/api/user/:id', async (_req, res) => {
 app.patch('/api/user/:id', jsonParser, async (_req, res) => {
 	try {
 		const id = _req.params.id;
+		const headers = _req.headers;
+		const authorization = headers.authorization;
+		if (!await verifyToken(authorization)) {
+			unauthorized(res);
+			return;
+		}
 		const { 
 			first_name,
 			middle_name,
@@ -214,6 +220,12 @@ app.patch('/api/user/:id', jsonParser, async (_req, res) => {
 app.delete('/api/user/:id', async (_req, res) => {
 	try {
 		const id = _req.params.id;
+		const headers = _req.headers;
+		const authorization = headers.authorization;
+		if (!await verifyToken(authorization)) {
+			unauthorized(res);
+			return;
+		}
 		const queryString = "DELETE FROM lirra.user WHERE user_id = $1;";
 		const params = [id];
 		const result = await apiCall(params, queryString, res);
@@ -231,6 +243,12 @@ app.delete('/api/user/:id', async (_req, res) => {
 
 app.post('/api/course', jsonParser, async (_req, res) => {
 	try {
+		const headers = _req.headers;
+		const authorization = headers.authorization;
+		if (!await verifyToken(authorization)) {
+			unauthorized(res);
+			return;
+		}
 		const courseId = uuidv4();
 		const { course_name } = _req.body;
 		const queryString = "INSERT INTO lirra.course(course_id, course_name) VALUES($1, $2);";
@@ -248,6 +266,12 @@ app.post('/api/course', jsonParser, async (_req, res) => {
 
 app.get('/api/course/:id', async (_req, res) => {
 	try {
+		const headers = _req.headers;
+		const authorization = headers.authorization;
+		if (!await verifyToken(authorization)) {
+			unauthorized(res);
+			return;
+		}
 		const id = _req.params.id;
 		const queryString = "SELECT * FROM lirra.course WHERE course_id = $1;";
 		const params = [id];
@@ -264,6 +288,12 @@ app.get('/api/course/:id', async (_req, res) => {
 
 app.patch('/api/course/:id', jsonParser, async (_req, res) => {
 	try {
+		const headers = _req.headers;
+		const authorization = headers.authorization;
+		if (!await verifyToken(authorization)) {
+			unauthorized(res);
+			return;
+		}
 		const id = _req.params.id;
 		const { course_name } = _req.body;
 		const queryString = "UPDATE lirra.course SET course_name = $1 WHERE course_id = $2;";
@@ -281,6 +311,12 @@ app.patch('/api/course/:id', jsonParser, async (_req, res) => {
 
 app.delete('/api/course/:id', async (_req, res) => {
 	try {
+		const headers = _req.headers;
+		const authorization = headers.authorization;
+		if (!await verifyToken(authorization)) {
+			unauthorized(res);
+			return;
+		}
 		const id = _req.params.id;
 		const queryString = "DELETE FROM lirra.course WHERE course_id = $1;";
 		const params = [id];
@@ -299,6 +335,12 @@ app.delete('/api/course/:id', async (_req, res) => {
 
 app.post('/api/library-resource', jsonParser, async (_req, res) => {
 	try {
+		const headers = _req.headers;
+		const authorization = headers.authorization;
+		if (!await verifyToken(authorization)) {
+			unauthorized(res);
+			return;
+		}
 		const libResourceId = uuidv4();
 		const {
 			title,
@@ -347,6 +389,12 @@ app.post('/api/library-resource', jsonParser, async (_req, res) => {
 
 app.get('/api/library-resource/:id', async (_req, res) => {
 	try {
+		const headers = _req.headers;
+		const authorization = headers.authorization;
+		if (!await verifyToken(authorization)) {
+			unauthorized(res);
+			return;
+		}
 		const id = _req.params.id;
 		const queryString = "SELECT * FROM lirra.library_resource WHERE library_resource_id = $1;";
 		const params = [id];
@@ -363,6 +411,12 @@ app.get('/api/library-resource/:id', async (_req, res) => {
 
 app.patch('/api/library-resource/:id', jsonParser, async (_req, res) => {
 	try {
+		const headers = _req.headers;
+		const authorization = headers.authorization;
+		if (!await verifyToken(authorization)) {
+			unauthorized(res);
+			return;
+		}
 		const id = _req.params.id;
 		const {
 			title,
@@ -407,6 +461,12 @@ app.patch('/api/library-resource/:id', jsonParser, async (_req, res) => {
 
 app.delete('/api/library-resource/:id', async (_req, res) => {
 	try {
+		const headers = _req.headers;
+		const authorization = headers.authorization;
+		if (!await verifyToken(authorization)) {
+			unauthorized(res);
+			return;
+		}
 		const id = _req.params.id;
 		const queryString = "DELETE FROM lirra.library_resource WHERE library_resource_id = $1;";
 		const params = [id];
@@ -425,6 +485,12 @@ app.delete('/api/library-resource/:id', async (_req, res) => {
 
 app.post('/api/recommendation', jsonParser, async (_req, res) => {
 	try {
+		const headers = _req.headers;
+		const authorization = headers.authorization;
+		if (!await verifyToken(authorization)) {
+			unauthorized(res);
+			return;
+		}
 		const recommendationId = uuidv4();
 		const {
 			user_id,
@@ -448,6 +514,12 @@ app.post('/api/recommendation', jsonParser, async (_req, res) => {
 
 app.get('/api/recommendation/:id', async (_req, res) => {
 	try {
+		const headers = _req.headers;
+		const authorization = headers.authorization;
+		if (!await verifyToken(authorization)) {
+			unauthorized(res);
+			return;
+		}
 		const id = _req.params.id
 		const queryString = "SELECT * FROM lirra.recommendation WHERE recommendation_id = $1;";
 		const params = [id];
@@ -464,6 +536,12 @@ app.get('/api/recommendation/:id', async (_req, res) => {
 
 app.patch('/api/recommendation/:id', jsonParser, async (_req, res) => {
 	try {
+		const headers = _req.headers;
+		const authorization = headers.authorization;
+		if (!await verifyToken(authorization)) {
+			unauthorized(res);
+			return;
+		}
 		const id = _req.params.id
 		const {
 			user_id,
