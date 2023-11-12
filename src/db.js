@@ -1,6 +1,9 @@
 const { Pool } = require('pg');
+const dotenv = require('dotenv');
 
-const connection = "postgres://root:wIHmgOiHoRfGFYaVkE9GG3rnode9Qy3T@dpg-cl1ocjop2gis73fh3k10-a.singapore-postgres.render.com/lirra_postgress?sslmode=no-verify";
+dotenv.config();
+
+const connection = process.env.POSTGRESQL_CONNECTION_STRING;
 
 const pool = new Pool({
 	connectionString: connection,
@@ -14,8 +17,7 @@ const db = async () => {
 		client = await pool.connect();
 		return client;
 	} catch (e) {
-		console.log(e);
-		return null;
+		console.error(`connection db error ${e.message}`);
 	};
 };
 

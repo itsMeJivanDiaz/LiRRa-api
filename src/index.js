@@ -2,10 +2,14 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require('body-parser');
 const { db } = require('./db');
-const { cryptPassword } = require('./helper');
+const { cryptPassword, comparePassword, verifyToken, getJwtToken, verifyRefreshToken } = require('./helper');
 const { v4: uuidv4 } = require('uuid');
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
 
-const PORT = 5454;
+dotenv.config();
+
+const PORT = process.env.PORT;
 const app = express();
 
 var client;
@@ -31,6 +35,12 @@ const apiCall = async (params, queryString, res) => {
 			client.release();
 		}
 	}
+};
+
+const unauthorized = (res) => {
+	res.status(403).json({
+		response: 'unauthorized request'
+	});
 };
 
 const error = (response, res) => {
@@ -60,6 +70,61 @@ app.get('/api/pg-ping', async (_req, res) => {
 			client.release();
 		}
 	};
+});
+
+// USER_AUTH_SECTION
+
+// USER_AUTHENTICATION
+
+app.post('/api/user/auth', jsonParser, async (_req, res) => {
+	try {
+		const {
+			user_email,
+			user_password
+		} = _req.body;
+		const queryString = "SELECT * FROM lirra.user WHERE user_email = $1;";
+		const params = [user_email];
+		const result = await apiCall(params, queryString);
+		const data = result.rows[0];
+		if (data === undefined) {
+			error({ message: "wrong password or email" }, res);
+			return;
+		}
+		if (!await comparePassword(user_password, data.user_password)) {
+			error({ message: "wrong password or email" }, res);
+			return;
+		}
+		const jwt = getJwtToken(data);
+		success(jwt, res);
+	} catch (e) {
+		error(e, res);
+	};
+});
+
+// USER_REFRESH_TOKEN
+
+app.post('/api/user/refresh', jsonParser, async (_req, res) => {
+	try {
+		const {
+			refresh_token,
+			user_id
+		} = _req.body;
+		if (!refresh_token) {
+			unauthorized(res);
+			return;
+		}
+		if (!await verifyRefreshToken(refresh_token, user_id)) {
+			unauthorized(res);
+			return;
+		}
+		const data = jwt.decode(refresh_token);
+		delete data.iat;
+		delete data.exp;
+		const newJwt = getJwtToken(data);
+		success(newJwt, res);
+	} catch (e) {
+		error(e, res);
+	}
 });
 
 // USER_SECTION
@@ -104,6 +169,12 @@ app.post('/api/user', jsonParser, async (_req, res) => {
 app.get('/api/user/:id', async (_req, res) => {
 	try {
 		const id = _req.params.id;
+		const headers = _req.headers;
+		const authorization = headers.authorization;
+		if (!await verifyToken(authorization)) {
+			unauthorized(res);
+			return;
+		}
 		const queryString = "SELECT * FROM lirra.user WHERE user_id = $1;";
 		const params = [id];
 		const result = await apiCall(params, queryString, res);
