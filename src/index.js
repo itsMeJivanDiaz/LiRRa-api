@@ -354,7 +354,7 @@ app.post('/api/library-resource', jsonParser, async (_req, res) => {
 			in_library,
 			metadata,
 			course_id,
-			resourse_type_id
+			resource_type_id
 		} = _req.body;
 		const queryString = `
 			INSERT INTO
@@ -373,8 +373,8 @@ app.post('/api/library-resource', jsonParser, async (_req, res) => {
 			recommendation_count,
 			in_library,
 			metadata,
-			resourse_type_id,
-			course_id
+			resource_type_id,
+			course_id,
 		];
 		const result = await apiCall(params, queryString, res);
 		if (result) {
