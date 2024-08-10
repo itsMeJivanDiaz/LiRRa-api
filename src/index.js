@@ -62,7 +62,7 @@ const success = (response, res) => {
 };
 
 app.get("/api/server-ping", (_req, res) => {
- success("server-pong-charis", res);
+ success("server-pong", res);
 });
 
 app.get("/api/pg-ping", async (_req, res) => {
@@ -85,6 +85,7 @@ app.get("/api/pg-ping", async (_req, res) => {
 app.post("/api/user/auth", jsonParser, async (_req, res) => {
  try {
   const { user_email, user_password } = _req.body;
+  console.log(_req.body);
   const queryString = "SELECT * FROM lirra.user WHERE user_email = $1;";
   const params = [user_email];
   const result = await apiCall(params, queryString);
