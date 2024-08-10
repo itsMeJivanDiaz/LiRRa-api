@@ -56,7 +56,7 @@ const success = (response, res) => {
 };
 
 app.get('/api/server-ping', (_req, res) => {
-	success('server-pong', res);
+	success('server-pong', `${res}-hello-charis`);
 });
 
 app.get('/api/pg-ping', async (_req, res) => {
