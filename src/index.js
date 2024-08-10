@@ -83,26 +83,7 @@ app.get("/api/pg-ping", async (_req, res) => {
 // USER_AUTHENTICATION
 
 app.post("/api/user/auth", jsonParser, async (_req, res) => {
- try {
-  const { user_email, user_password } = _req.body;
-  const queryString = "SELECT * FROM lirra.user WHERE user_email = $1;";
-  const params = [user_email];
-  const result = await apiCall(params, queryString);
-  const data = result.rows[0];
-  if (data === undefined) {
-   error({ message: "wrong password or email" }, res);
-   return;
-  }
-  if (!(await comparePassword(user_password, data.user_password))) {
-   error({ message: "wrong password or email" }, res);
-   return;
-  }
-  const jwt = getJwtToken(data);
-  success(jwt, res);
- } catch (e) {
-  console.log(_req.body);
-  error(e, res);
- }
+ success(`${_req.body}`, res);
 });
 
 // USER_REFRESH_TOKEN
