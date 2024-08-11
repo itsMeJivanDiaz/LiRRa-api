@@ -89,14 +89,14 @@ app.post("/api/user/auth", jsonParser, async (_req, res) => {
   const params = [user_username];
   const result = await apiCall(params, queryString, res);
   const data = result.rows[0];
-  if (data === undefined) {
-   error({ message: "wrong password or email" }, res);
+  if (
+   data === undefined ||
+   !(await comparePassword(user_password, data.user_password))
+  ) {
+   error({ message: "wrong password or username" }, res);
    return;
   }
-  if (!(await comparePassword(user_password, data.user_password))) {
-   error({ message: "wrong password or email" }, res);
-   return;
-  }
+
   const jwt = getJwtToken(data);
   success(jwt, res);
  } catch (e) {
