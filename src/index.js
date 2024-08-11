@@ -133,25 +133,18 @@ app.post("/api/user/refresh", jsonParser, async (_req, res) => {
 app.post("/api/user", jsonParser, async (_req, res) => {
  try {
   const userId = uuidv4();
-  const {
-   first_name,
-   middle_name,
-   last_name,
-   user_email,
-   user_password,
-   user_type_id,
-  } = _req.body;
+  const { first_name, last_name, user_username, user_password, user_type_id } =
+   _req.body;
   const password = await cryptPassword(user_password);
   const queryString = `
-			INSERT INTO lirra.user(user_id, first_name, middle_name, last_name, user_email, user_password, user_type_id) 
-			VALUES($1, $2, $3, $4, $5, $6, $7);
+			INSERT INTO lirra.user(user_id, first_name, last_name, user_username, user_password, user_type_id) 
+			VALUES($1, $2, $3, $4, $5, $6);
 		`;
   const params = [
    userId,
    first_name,
-   middle_name,
    last_name,
-   user_email,
+   user_username,
    password,
    user_type_id,
   ];
