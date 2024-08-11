@@ -13,9 +13,9 @@ const { v4: uuidv4 } = require("uuid");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 
-dotenv.config();
+dotenv.config({ path: "../.env" });
 
-const PORT = process.env.PORT;
+const PORT = process.env.API_PORT;
 const app = express();
 
 var client;
@@ -84,9 +84,9 @@ app.get("/api/pg-ping", async (_req, res) => {
 
 app.post("/api/user/auth", jsonParser, async (_req, res) => {
  try {
-  const { user_email, user_password } = _req.body;
-  const queryString = "SELECT * FROM lirra.user WHERE user_email = $1;";
-  const params = [user_email];
+  const { user_username, user_password } = _req.body;
+  const queryString = "SELECT * FROM lirra.user WHERE user_username = $1;";
+  const params = [user_username];
   const result = await apiCall(params, queryString, res);
   const data = result.rows[0];
   if (data === undefined) {
@@ -227,6 +227,22 @@ app.delete("/api/user/:id", async (_req, res) => {
   const result = await apiCall(params, queryString, res);
   if (result) {
    success("success", res);
+  }
+ } catch (e) {
+  error(e, res);
+ }
+});
+
+// USER_TYPE_SECTION
+
+// READ_USER_TYPE
+
+app.get("/api/user-types", async (_req, res) => {
+ try {
+  const queryString = "SELECT * FROM lirra.user_type";
+  const result = await apiCall(null, queryString, res);
+  if (result) {
+   success(result.rows, res);
   }
  } catch (e) {
   error(e, res);
